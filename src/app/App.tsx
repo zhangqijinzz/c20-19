@@ -1,4 +1,4 @@
-import { Check, Cloud, FileCheck2, PanelTop, TriangleAlert } from 'lucide-react'
+import { Check, Cloud, FileCheck2, PanelTop, Redo2, TriangleAlert, Undo2 } from 'lucide-react'
 import { DEVICE_DEFINITIONS } from '../shared/models'
 import { CanvasStage } from '../features/canvas/components/CanvasStage'
 import { DevicePalette } from '../features/materials/components/DevicePalette'
@@ -21,7 +21,7 @@ export function App() {
       <section className="app-main">
         <header className="topbar">
           <div className="breadcrumb"><span>工作台</span><span>/</span><strong>{activePlan.name}</strong></div>
-          <div className="topbar-actions"><span className={`save-state ${viewModel.status === 'error' ? 'save-error' : ''}`}><Cloud size={15} /> {viewModel.status === 'saving' ? '保存中…' : viewModel.status === 'error' ? '保存异常' : '已保存到本地'}</span><button className="preview-button" onClick={viewModel.openPreview} type="button"><PanelTop size={16} /> 预览方案</button><span className="avatar">FD</span></div>
+          <div className="topbar-actions"><div className="history-actions"><button aria-label="撤销" className="history-button" disabled={!viewModel.canUndo} onClick={viewModel.undo} title={viewModel.canUndo ? `撤销：${viewModel.undoLabel ?? '上一步编辑'}（Ctrl/⌘+Z，仅当前方案）` : '撤销：仅记录当前方案内的编辑，暂无可撤销内容'} type="button"><Undo2 size={15} /></button><button aria-label="重做" className="history-button" disabled={!viewModel.canRedo} onClick={viewModel.redo} title={viewModel.canRedo ? `重做：${viewModel.redoLabel ?? '上一步编辑'}（Ctrl/⌘+Shift+Z）` : '重做：撤销后再编辑会清空可重做记录'} type="button"><Redo2 size={15} /></button></div><span className={`save-state ${viewModel.status === 'error' ? 'save-error' : ''}`}><Cloud size={15} /> {viewModel.status === 'saving' ? '保存中…' : viewModel.status === 'error' ? '保存异常' : '已保存到本地'}</span><button className="preview-button" onClick={viewModel.openPreview} type="button"><PanelTop size={16} /> 预览方案</button><span className="avatar">FD</span></div>
         </header>
         <div className="workspace-content">
           <div className="page-heading"><div><span className="eyebrow">DESK PLANNER / {new Date().getFullYear()}</span><h1>把桌面，变成一张清晰的地图。</h1><p>先放置，再调整。每个尺寸与间距都在你的掌控之中。</p></div><div className="feedback-chip"><span className={viewModel.status === 'error' ? 'feedback-icon error' : 'feedback-icon'}>{viewModel.status === 'error' ? <TriangleAlert size={14} /> : <Check size={14} />}</span>{viewModel.feedback}</div></div>
