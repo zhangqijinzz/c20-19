@@ -28,6 +28,7 @@ export function PlanSidebar({ plans, activePlanId, onSelect, onCreate, onDuplica
       <div className="sidebar-footer">
         <button className="ghost-action" onClick={onDuplicate} type="button"><Copy size={15} /> 复制当前方案</button>
         <button className="ghost-action danger-action" onClick={onDelete} type="button"><Trash2 size={15} /> 删除当前方案</button>
+        <p className="sidebar-hint">撤销 / 重做（Ctrl/⌘+Z）对全部方案的修改生效：新建、复制、删除方案都可撤销，撤销会带你回到发生修改的方案；切换方案本身不记入历史。</p>
       </div>
     </aside>
   )

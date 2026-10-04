@@ -10,11 +10,12 @@ interface CanvasStageProps {
   analysis: LayoutAnalysis
   onSelect: (id: string | null) => void
   onMove: (id: string, x: number, y: number) => void
+  onMoveEnd: () => void
 }
 
 interface DragState { id: string; offsetX: number; offsetY: number }
 
-export function CanvasStage({ plan, selectedItemId, analysis, onSelect, onMove }: CanvasStageProps) {
+export function CanvasStage({ plan, selectedItemId, analysis, onSelect, onMove, onMoveEnd }: CanvasStageProps) {
   const stageRef = useRef<SVGSVGElement>(null)
   const [drag, setDrag] = useState<DragState | null>(null)
   const scaleToMm = useCallback((clientX: number, clientY: number) => {
@@ -30,11 +31,19 @@ export function CanvasStage({ plan, selectedItemId, analysis, onSelect, onMove }
       if (!point) return
       onMove(drag.id, point.x - drag.offsetX, point.y - drag.offsetY)
     }
-    const handleUp = () => setDrag(null)
+    const handleUp = () => {
+      setDrag(null)
+      onMoveEnd()
+    }
     window.addEventListener('pointermove', handleMove)
     window.addEventListener('pointerup', handleUp)
-    return () => { window.removeEventListener('pointermove', handleMove); window.removeEventListener('pointerup', handleUp) }
-  }, [drag, onMove, scaleToMm])
+    window.addEventListener('pointercancel', handleUp)
+    return () => {
+      window.removeEventListener('pointermove', handleMove)
+      window.removeEventListener('pointerup', handleUp)
+      window.removeEventListener('pointercancel', handleUp)
+    }
+  }, [drag, onMove, onMoveEnd, scaleToMm])
 
   const startDrag = (event: ReactPointerEvent<SVGGElement>, item: DeskItem) => {
     event.stopPropagation()
